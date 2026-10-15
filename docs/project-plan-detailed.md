@@ -57,7 +57,8 @@ for `/` and `/add` carrying their root test ids, and `/health` (rewrite to `app/
 which checks the API).
 
 **Acceptance criteria:**
-- [ ] `/` renders `data-testid="pet-list-page"` and `/add` renders `data-testid="add-pet-page"`.
+- [ ] `/` renders `data-testid="pet-list-page"` with an `add-pet-link` to `/add`, and `/add` renders
+      `data-testid="add-pet-page"` with a `back-to-list-link` to `/`.
 - [ ] `GET /health` on :3000 returns 200 when the API's `/health` answers and 503 when it does not.
 - [ ] The `PetId` schema accepts a 19-digit string and rejects a number.
 - [ ] `web/README.md` gives install, start and env vars (`API_URL`).
@@ -115,7 +116,8 @@ dependency that loads the pet or raises `PetNotFound`.
       properties return 422 `{detail}`; malformed JSON returns 400.
 - [ ] `GET /pet/{petId}` returns the pet, 404 for an unknown id including `9999999999999999999`,
       and 422 for a non-numeric id.
-- [ ] `tests/contract/run.sh http://localhost:8000` passes for `addPet` and `getPetById`.
+- [ ] `tests/contract/run.sh http://localhost:8000` reports no failures for `addPet` and `getPetById`
+      (`findPetsByStatus` failures are expected until 1.3.1).
 
 **Verification:**
 - [ ] Tests pass: `uv run pytest` (from `api/`)
@@ -143,7 +145,8 @@ with every add-pet test id, a Server Action that validates with the shared Zod `
       form clears and status resets to `available`.
 - [ ] A blank or spaces-only name, a 101-char name or a 51-char category shows `form-error`
       without calling the API; an API failure shows "Could not add the pet. Try again."
-- [ ] The add-pet journeys in `tests/e2e-reference/run.sh http://localhost:3000` pass.
+- [ ] The add-pet reference journeys pass: `cd tests/e2e-reference && npm ci &&
+      WEB_URL=http://localhost:3000 npx playwright test -g "adding a pet"`.
 
 **Verification:**
 - [ ] Tests pass: `npm test` (from `web/`)
