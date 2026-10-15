@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pets</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<main data-testid="pet-list-page">
+  <h1>Pets</h1>
+  <div class="bar">
+    <label>Status
+      <select data-testid="status-filter">
+        <option value="available" selected>available</option>
+        <option value="pending">pending</option>
+        <option value="sold">sold</option>
+      </select>
+    </label>
+    <a href="add.html" data-testid="add-pet-link">Add pet</a>
+  </div>
+  <table><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody data-testid="pet-list"></tbody></table>
+  <p data-testid="pet-list-empty" hidden>No pets with this status.</p>
+</main>
+<script type="module">import { initList } from './app.js'; initList();</script>
+</body>
+</html>

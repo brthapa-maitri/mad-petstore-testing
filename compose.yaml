@@ -1,0 +1,29 @@
+# Local runtime. db always runs; api and web start once the team has built them (profile "app").
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: petstore
+      POSTGRES_PASSWORD: petstore
+      POSTGRES_DB: petstore
+    ports: ["${DB_PORT:-5432}:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U petstore"]
+      interval: 2s
+      retries: 30
+  api:
+    profiles: [app]
+    build: ./api
+    environment:
+      DATABASE_URL: postgresql://petstore:petstore@db:5432/petstore
+    ports: ["8000:8000"]
+    depends_on:
+      db: { condition: service_healthy }
+  web:
+    profiles: [app]
+    build: ./web
+    environment:
+      API_URL: http://api:8000
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports: ["3000:3000"]
+    depends_on: [api]

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Petstore course</title>
+<style>
+:root { --bg:#f6f6f4; --card:#fff; --ink:#1f2328; --muted:#6a737d; --rule:#d8dce0; --ok:#1a7f37; --bad:#cf222e; --ff:#bc4c00; --run:#0969da; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#16181d; --card:#1f232a; --ink:#e6edf3; --muted:#9198a1; --rule:#30363d; --ok:#3fb950; --bad:#f85149; --ff:#db6d28; --run:#4493f8; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui,sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 48px; }
+.stages { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 20px; }
+.stage { padding:3px 10px; border:1px solid var(--rule); border-radius:12px; font-size:13px; color:var(--muted); }
+.stage.pass { color:var(--ok); border-color:var(--ok); } .stage.fail { color:var(--bad); border-color:var(--bad); }
+.stage.fast-forwarded { color:var(--ff); border-color:var(--ff); } .stage.current { font-weight:600; color:var(--ink); border-color:var(--ink); }
+.board { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.col, .prs { background:var(--card); border:1px solid var(--rule); border-radius:8px; padding:12px; min-width:0; }
+.col h2, .prs h2 { margin:0 0 8px; font-size:14px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+.bead { border-top:1px solid var(--rule); padding:6px 0; font-size:14px; overflow-wrap:anywhere; }
+.meta { color:var(--muted); font-size:12px; }
+.ff { color:var(--ff); }
+.prs { margin-top:12px; }
+.pr { display:flex; justify-content:space-between; gap:12px; border-top:1px solid var(--rule); padding:6px 0; font-size:14px; }
+.pill { font-size:12px; padding:0 8px; border-radius:10px; border:1px solid; white-space:nowrap; }
+.merged { color:var(--ok); } .needs-changes { color:var(--bad); } .approved { color:var(--run); } .open { color:var(--muted); }
+.timer { float:right; font-variant-numeric:tabular-nums; } .late { color:var(--bad); }
+.errors { color:var(--bad); font-size:13px; }
+@media (max-width:720px) { .board { grid-template-columns:minmax(0,1fr); } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Petstore course <span class="timer" id="timer"></span></h1>
+  <div class="stages" id="stages"></div>
+  <p class="meta" id="note"></p>
+  <div class="board">
+    <section class="col"><h2>Ready</h2><div id="ready"></div></section>
+    <section class="col"><h2>In progress</h2><div id="in_progress"></div></section>
+    <section class="col"><h2>Closed</h2><div id="closed"></div></section>
+  </div>
+  <section class="prs"><h2>Pull requests</h2><div id="prs"></div></section>
+  <p class="errors" id="errors"></p>
+</main>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+const STAGES = ['S01','S02','S03','S04','S05','S06','S07','S08','S09'];
+function render(s) {
+  document.getElementById('stages').innerHTML = STAGES.map(id =>
+    `<span class="stage ${s.checks[id]?.status ?? ''} ${id === s.stage ? 'current' : ''}">${id}</span>`).join('');
+  document.getElementById('note').textContent = s.view === 'team' ? 'Team view' : 'Plan view arrives in week 2 — showing the team board.';
+  for (const col of ['ready', 'in_progress', 'closed']) {
+    document.getElementById(col).innerHTML = s.beads[col].map(b =>
+      `<div class="bead">${esc(b.title)} <span class="meta">${esc(b.id)} · ${esc(b.role ?? b.type)}${b.assignee ? ' · ' + esc(b.assignee) : ''}</span>${b.fastForwarded ? ' <span class="ff">fast-forwarded</span>' : ''}</div>`).join('') || '<p class="meta">none</p>';
+  }
+  document.getElementById('prs').innerHTML = s.prs.map(p =>
+    `<div class="pr"><span>#${p.number} ${esc(p.title)}</span><span class="pill ${p.state}">${p.state}</span></div>`).join('') || '<p class="meta">no PRs yet</p>';
+  const t = document.getElementById('timer');
+  t.textContent = s.cutoff ? `${s.cutoff.stage} cut-off ${s.cutoff.remainingMinutes >= 0 ? 'in ' + s.cutoff.remainingMinutes + ' min' : 'passed'}` : '';
+  t.className = 'timer' + (s.cutoff && s.cutoff.remainingMinutes < 0 ? ' late' : '');
+  document.getElementById('errors').textContent = s.errors.join(' · ');
+}
+async function tick() {
+  try { render(await (await fetch('/api/state')).json()); }
+  catch (e) { document.getElementById('errors').textContent = 'dashboard server not reachable'; }
+}
+tick(); setInterval(tick, 10000);
+</script>
+</body>
+</html>

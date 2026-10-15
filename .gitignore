@@ -1,0 +1,8 @@
+.superpowers/
+node_modules/
+progress/checks/*.log
+test-results/
+playwright-report/
+.deploy/
+.terraform/
+*.tfstate*

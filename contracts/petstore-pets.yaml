@@ -1,0 +1,141 @@
+openapi: 3.0.3
+info:
+  title: MAD Petstore — Pets
+  version: 1.0.0
+  description: >
+    Pet subset of the Swagger Petstore v3 contract, used by the MAD Petstore course.
+    Every deviation from upstream is listed in contracts/CHANGELOG.md.
+servers:
+  - url: http://localhost:8000
+paths:
+  /pet:
+    post:
+      operationId: addPet
+      summary: Add a new pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPet'
+      responses:
+        '200':
+          description: The created pet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /pet/findByStatus:
+    get:
+      operationId: findPetsByStatus
+      summary: Find pets with one status
+      parameters:
+        - name: status
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/PetStatus'
+      responses:
+        '200':
+          description: Pets with exactly that status
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /pet/{petId}:
+    get:
+      operationId: getPetById
+      summary: Get one pet
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/PetId'
+      responses:
+        '200':
+          description: The pet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+components:
+  schemas:
+    PetId:
+      type: string
+      pattern: '^[0-9]{1,19}$'
+      description: int64 serialized as a decimal string (JavaScript numbers lose precision above 2^53).
+      example: '9223372036854775807'
+    PetStatus:
+      type: string
+      enum: [available, pending, sold]
+    Category:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+    NewPet:
+      type: object
+      additionalProperties: false
+      required: [name, status]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        status:
+          $ref: '#/components/schemas/PetStatus'
+        category:
+          $ref: '#/components/schemas/Category'
+    Pet:
+      type: object
+      additionalProperties: false
+      required: [id, name, status]
+      properties:
+        id:
+          $ref: '#/components/schemas/PetId'
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/PetStatus'
+        category:
+          $ref: '#/components/schemas/Category'
+    Error:
+      type: object
+      properties:
+        detail: {}
+  responses:
+    BadRequest:
+      description: The request body is not parseable JSON
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: The request failed validation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: No pet with that id
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

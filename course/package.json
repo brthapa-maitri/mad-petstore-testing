@@ -1,0 +1,13 @@
+{
+  "name": "mad-petstore-course",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test 'test/*.test.mjs' && bats test/",
+    "dashboard": "node dashboard/server.mjs"
+  },
+  "devDependencies": {
+    "bats": "1.13.0",
+    "yaml": "2.8.4"
+  }
+}

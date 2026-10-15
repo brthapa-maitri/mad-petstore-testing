@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Add pet</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<main data-testid="add-pet-page">
+  <h1>Add pet</h1>
+  <form data-testid="add-pet-form" novalidate>
+    <label>Name <input name="name" data-testid="pet-name-input" maxlength="100" required></label>
+    <label>Status
+      <select name="status" data-testid="pet-status-select">
+        <option value="available">available</option>
+        <option value="pending">pending</option>
+        <option value="sold">sold</option>
+      </select>
+    </label>
+    <label>Category <input name="category" data-testid="pet-category-input" maxlength="50"></label>
+    <button type="submit" data-testid="add-pet-submit">Add</button>
+    <p data-testid="form-error" role="alert" hidden></p>
+  </form>
+  <section data-testid="created-pet" hidden>
+    <h2>Added</h2>
+    <p>Id <span data-testid="created-pet-id"></span></p>
+    <p>Name <span data-testid="created-pet-name"></span></p>
+    <p>Status <span data-testid="created-pet-status"></span></p>
+  </section>
+  <a href="index.html" data-testid="back-to-list-link">Back to list</a>
+</main>
+<script type="module">import { initAdd } from './app.js'; initAdd();</script>
+</body>
+</html>

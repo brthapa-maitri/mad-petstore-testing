@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "playwright-test": {
+      "command": "npm",
+      "args": ["--prefix", "e2e", "run", "--silent", "mcp"]
+    }
+  }
+}
