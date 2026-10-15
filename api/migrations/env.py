@@ -22,6 +22,8 @@ def _url() -> str:
 
 
 def run_migrations_offline() -> None:
+    # Offline (--sql) mode emits plain SQL and ignores ALEMBIC_SCHEMA: the ephemeral test
+    # schema is an online-only feature (it needs a connection to SET search_path).
     context.configure(url=_url(), target_metadata=target_metadata, literal_binds=True)
     with context.begin_transaction():
         context.run_migrations()
