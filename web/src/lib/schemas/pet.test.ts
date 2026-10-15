@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Pet, PetId } from "./pet";
+import { parseNewPetForm, Pet, PetId } from "./pet";
 
 describe("PetId", () => {
   it("accepts a 19-digit string above 2^53", () => {
@@ -23,5 +23,32 @@ describe("Pet", () => {
       status: "sold",
     });
     expect(pet.id).toBe("9007199254740993");
+  });
+});
+
+describe("parseNewPetForm", () => {
+  it("trims name and category and omits an empty category", () => {
+    expect(
+      parseNewPetForm({ name: "  Rex ", status: "sold", category: "  " }),
+    ).toEqual({ ok: true, data: { name: "Rex", status: "sold" } });
+    expect(
+      parseNewPetForm({ name: "Rex", status: "sold", category: " Dogs " }),
+    ).toEqual({
+      ok: true,
+      data: { name: "Rex", status: "sold", category: { name: "Dogs" } },
+    });
+  });
+  it("rejects blank and over-long values", () => {
+    expect(
+      parseNewPetForm({ name: "  ", status: "sold", category: "" }).ok,
+    ).toBe(false);
+    expect(
+      parseNewPetForm({ name: "a".repeat(101), status: "sold", category: "" })
+        .ok,
+    ).toBe(false);
+    expect(
+      parseNewPetForm({ name: "a".repeat(100), status: "sold", category: "" })
+        .ok,
+    ).toBe(true);
   });
 });
