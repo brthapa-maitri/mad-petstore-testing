@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.pets.models import Pet
@@ -24,3 +25,9 @@ async def get(db: AsyncSession, pet_id: int) -> Pet | None:
     if pet_id > INT64_MAX:
         return None
     return await db.get(Pet, pet_id)
+
+
+async def find_by_status(db: AsyncSession, status: str) -> list[Pet]:
+    # One indexed SELECT (pet_status_idx); ids rise with the sequence, so id DESC is newest first.
+    result = await db.scalars(select(Pet).where(Pet.status == status).order_by(Pet.id.desc()))
+    return list(result)
