@@ -1,7 +1,7 @@
 from enum import StrEnum
-from typing import Annotated
+from typing import Annotated, Any
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 PetId = Annotated[str, Field(pattern=r"^[0-9]{1,19}$")]
 
@@ -25,12 +25,31 @@ class NewPet(BaseModel):
     status: PetStatus
     category: Category | None = None
 
+    @model_validator(mode="before")
+    @classmethod
+    def category_not_null(cls, v: Any) -> Any:
+        # The contract makes category optional, not nullable: omit it rather than send null.
+        if isinstance(v, dict) and "category" in v and v["category"] is None:
+            raise ValueError("category must be omitted rather than null")
+        return v
+
 
 class Pet(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: PetId
     name: str
     status: PetStatus
     category: Category | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def from_orm_row(cls, v: Any) -> Any:
+        # The row stores the category as a flat column; the API nests it.
+        if hasattr(v, "category_name"):
+            category = {"name": v.category_name} if v.category_name is not None else None
+            return {"id": v.id, "name": v.name, "status": v.status, "category": category}
+        return v
 
     @field_validator("id", mode="before")
     @classmethod

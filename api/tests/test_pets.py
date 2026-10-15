@@ -11,7 +11,13 @@ FIRST_ID = 9007199254740993  # 2^53 + 1
 async def test_migration_creates_pet_table_and_sequence(engine: AsyncEngine) -> None:
     async with engine.connect() as conn:
         table = await conn.scalar(text("SELECT to_regclass('pet')"))
-        first = await conn.scalar(text("SELECT nextval('pet_id_seq')"))
+        # start_value, not nextval: other tests in the session consume the sequence.
+        first = await conn.scalar(
+            text(
+                "SELECT start_value FROM pg_sequences "
+                "WHERE sequencename = 'pet_id_seq' AND schemaname = current_schema()"
+            )
+        )
     assert table == "pet"
     assert first == FIRST_ID
 
