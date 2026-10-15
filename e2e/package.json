@@ -5,5 +5,9 @@
     "test": "playwright test",
     "mcp": "playwright run-test-mcp-server"
   },
-  "devDependencies": { "@playwright/test": "1.63.0" }
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3"
+  }
 }
