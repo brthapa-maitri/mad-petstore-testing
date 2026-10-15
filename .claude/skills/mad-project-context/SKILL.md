@@ -11,6 +11,28 @@ description: >
 The stack is in `docs/ARCHITECTURE.md` (and in the Stack section `/create-project-overlay` adds
 here). The folders, ports and run command are in `compose.yaml` (API in `api/`, web in `web/`).
 
+## Stack
+- Web: Next.js (App Router, TypeScript) in `web/`, port 3000; standards in `mad-frontend-standards`.
+- API: FastAPI (Pydantic v2, async SQLAlchemy, Alembic) in `api/`, port 8000; standards in
+  `mad-backend-standards`.
+- Database: PostgreSQL, the `db` service in `compose.yaml`.
+- Deployment: none (local only); there is no `infra/` and no deploy script.
+
+## Repo layout
+- `api/`, `web/`: the app, each with its own Dockerfile and a README with the no-Docker commands.
+- `contracts/`: the API contract and the test-id list (read-only).
+- `prototype/index.html`: the screens to follow.
+- `e2e/`: QA's Playwright suite. `tests/`: reference suites (off limits, see below).
+- `docs/`: architecture, specs, plan.
+
+## Commands
+- Start the database: `docker compose up -d db`. Whole app: `docker compose --profile app up -d --build`.
+- API (from `api/`): `uv sync`, `uv run pytest`, `uv run ruff check`, `uv run mypy src/`.
+- Web (from `web/`): `npm ci`, `npm test`, `npm run lint`, `npx tsc --noEmit`, `npm run build`.
+
+## Branching
+- `TEAM_BASE_BRANCH` is `develop`; every PR targets it. Only a person merges `develop` into `main`.
+
 ## Contract of record
 - `contracts/petstore-pets.yaml` is the contract of record. Never change it.
 - Pet ids are 64-bit in storage and decimal strings in the API and the UI; the id sequence
