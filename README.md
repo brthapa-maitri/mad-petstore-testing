@@ -69,19 +69,30 @@ The steps you will go through:
 
 ## 5. When you are done
 
-Run the app on your machine. It is on `develop`, and on `main` after the release.
+Run the app on your machine (see below), then check your cloud console is empty after teardown.
+
+## Run it on your machine
+
+The app is on `develop`, and on `main` after the release.
 
 ```bash
 git checkout develop && git pull
 docker compose --profile app up -d --build   # first build takes a few minutes
-open http://localhost:3000                   # API at http://localhost:8000
-docker compose --profile app down            # stop it
 ```
+
+Open http://localhost:3000 (the API is at http://localhost:8000). The database migration runs
+when the API starts.
+
+Stop it, keeping the database running:
+
+```bash
+docker compose --profile app stop api web
+```
+
+Stop and remove everything: `docker compose --profile app down`.
 
 No Docker? Follow the README in `api/` and in `web/`: the team writes the native run steps for the
 stack you chose.
-
-Check your cloud console is empty after teardown.
 
 ---
 
