@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ADD_FAILED } from "@/lib/schemas/pet";
 import { addPet, type AddPetState } from "./add-pet";
 
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+
 const start: AddPetState = { ok: null, n: 0 };
 
 function form(name: string, status = "available", category = ""): FormData {

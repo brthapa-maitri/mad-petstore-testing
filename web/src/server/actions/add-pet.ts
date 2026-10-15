@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { apiFetch } from "@/server/api";
 import { ADD_FAILED, parseNewPetForm, Pet } from "@/lib/schemas/pet";
 
@@ -40,7 +41,10 @@ export async function addPet(
     });
     if (res.ok) {
       const pet = Pet.safeParse(await res.json());
-      if (pet.success) return { ok: true, n, pet: pet.data };
+      if (pet.success) {
+        revalidatePath("/");
+        return { ok: true, n, pet: pet.data };
+      }
     } else if (res.status === 422) {
       const body = (await res.json()) as { detail?: unknown };
       if (typeof body.detail === "string") {
