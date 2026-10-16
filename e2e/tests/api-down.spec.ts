@@ -28,10 +28,7 @@ test.describe('API stopped', () => {
     await expect(add.name).toHaveValue(name);
   });
 
-  // Known failure: bug ps-eqr.3 (error.tsx calls reset() without router.refresh()). Remove
-  // `test.fail` when that bug is fixed; Playwright reports it as unexpectedly passing until then.
   test('the retry button loads the list once the API is back', async ({ page, request }) => {
-    test.fail(true, 'Known bug ps-eqr.3: "Try again" never re-fetches the list');
     test.info().annotations.push({ type: 'issue', description: 'ps-eqr.3' });
     const list = new PetListPage(page);
     await page.goto('/');
