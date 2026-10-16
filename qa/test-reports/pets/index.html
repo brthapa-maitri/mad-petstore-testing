@@ -43,6 +43,222 @@ Error generating stack: `+e.message+`
 /*$vite$:1*/</style>
   </head>
   <body>
+<!-- qa-summary:start -->
+<section id="qa-summary" style="font-family:system-ui,sans-serif;margin:16px;padding:20px;border:1px solid #d0d4da;border-radius:10px;background:#fff;color:#1a2330">
+  <h1 style="font-size:20px;margin:0 0 4px">QA Summary — ps-9y5.1 (refreshed for ps-eqr.3): Story 1.4.1 — end-to-end tests for adding and listing pets</h1>
+  <p style="margin:0 0 16px;color:#5b6572">Run date: 2026-10-16 · Plan: qa/test-plans/pets.md · PR: https://github.com/brthapa-maitri/mad-petstore-testing/pull/8</p>
+  <div id="qa-stats" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px"></div>
+  <div style="display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start;margin-bottom:16px">
+    <figure style="margin:0"><svg id="qa-donut" width="150" height="150" viewBox="0 0 42 42"></svg><figcaption style="text-align:center;font-size:12px;color:#5b6572">Pass / fail</figcaption></figure>
+    <figure style="margin:0"><svg id="qa-bars" width="440" height="150"></svg><figcaption style="font-size:12px;color:#5b6572">Per-suite results</figcaption></figure>
+  </div>
+  <h2 style="font-size:15px;margin:16px 0 6px">Acceptance-criteria coverage</h2>
+  <div id="qa-ac"></div>
+  <h2 style="font-size:15px;margin:16px 0 6px">Manual / exploratory findings</h2>
+  <ul id="qa-manual" style="margin:0;padding-left:20px"></ul>
+  <h2 style="font-size:15px;margin:16px 0 6px">Defects log</h2>
+  <div id="qa-defects"></div>
+  <h2 style="font-size:15px;margin:16px 0 6px">Healing log</h2>
+  <ul id="qa-healing" style="margin:0;padding-left:20px"></ul>
+  <script>
+  (function () {
+    var QA_DATA = {
+  "planned": 32,
+  "executed": 31,
+  "passed": 31,
+  "failed": 0,
+  "blocked": 1,
+  "suites": [
+    {
+      "name": "add-pet",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "name": "pet-list",
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "name": "pet-api",
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "name": "api-down",
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "name": "empty (skip)",
+      "passed": 0,
+      "failed": 0
+    }
+  ],
+  "ac": [
+    {
+      "id": "AC-1a",
+      "text": "Add a pet and see the API's id/name/status",
+      "scenarios": [
+        "1.1",
+        "1.2",
+        "1.6",
+        "1.8",
+        "1.9",
+        "1.10",
+        "1.11"
+      ],
+      "covered": true
+    },
+    {
+      "id": "AC-1b",
+      "text": "Empty-name and over-length errors in form-error (incl. spaces-only, 51-char category)",
+      "scenarios": [
+        "1.3",
+        "1.4",
+        "1.5",
+        "1.7",
+        "1.12"
+      ],
+      "covered": true
+    },
+    {
+      "id": "AC-1c",
+      "text": "The new pet at the top of its status list",
+      "scenarios": [
+        "2.5",
+        "2.6"
+      ],
+      "covered": true
+    },
+    {
+      "id": "AC-1d",
+      "text": "Filtering by each status and the URL surviving a refresh (plus /?status=foo, back button)",
+      "scenarios": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4",
+        "2.7",
+        "2.8"
+      ],
+      "covered": true
+    },
+    {
+      "id": "AC-1e",
+      "text": "The empty state — e2e test written but SKIPPED: every status has pets in the shared DB and the user declined a DB wipe; unit-covered by web PetTable test",
+      "scenarios": [
+        "3.1 (skipped)"
+      ],
+      "covered": false
+    },
+    {
+      "id": "AC-1f",
+      "text": "An unknown pet id returns 404 from the API (incl. id above int64 max; 422 for abc / bogus status)",
+      "scenarios": [
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4"
+      ],
+      "covered": true
+    },
+    {
+      "id": "AC-1g",
+      "text": "An id above 2^53 is shown unchanged as a string",
+      "scenarios": [
+        "4.5"
+      ],
+      "covered": true
+    },
+    {
+      "id": "AC-2",
+      "text": "Every spec selects by data-testid only and runs green",
+      "scenarios": [
+        "all; error.tsx has no testid, scoped by pet-list-page + role"
+      ],
+      "covered": true
+    },
+    {
+      "id": "AC-3",
+      "text": "QA report committed under qa/test-reports/<feature>/",
+      "scenarios": [
+        "qa/test-reports/pets/"
+      ],
+      "covered": true
+    },
+    {
+      "id": "Lead-1",
+      "text": "API stopped: / shows 'Could not load pets.' with a retry button",
+      "scenarios": [
+        "5.1"
+      ],
+      "covered": true
+    },
+    {
+      "id": "Lead-2",
+      "text": "API stopped: /add submit shows 'Could not add the pet. Try again.'",
+      "scenarios": [
+        "5.2"
+      ],
+      "covered": true
+    }
+  ],
+  "manual": [
+    "Empty state (3.1) skipped: the local DB is shared, the contract has no DELETE, and the user declined a DB reset. The skip reason is in the test. The empty message is unit-tested in web/src/components/pets/pet-table.test.tsx. To run it: start from a fresh DB.",
+    "Retry after the API returns (5.3) failed before the fix and now passes (ps-eqr.3: error.tsx calls router.refresh() before reset()).",
+    "Reference suite tests/e2e-reference/run.sh http://localhost:3000: 4/4 passed against the same stack.",
+    "Stability: 6 clean full runs gave identical results (~25s each). One earlier run was slow with extra failures while the host machine slept; it was discarded as environmental.",
+    "error.tsx has no data-testid (contracts/testids.md lists none for the error state); tests scope by pet-list-page and the button role."
+  ],
+  "defects": [
+    {
+      "id": "ps-eqr.3",
+      "severity": "Medium",
+      "title": "\"Try again\" on the pet list error page never reloads the list after the API is back",
+      "status": "filed — fixed in this PR"
+    }
+  ],
+  "healing": []
+};
+    var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+    var stat = function (label, n, color) { return '<div style="min-width:96px;padding:10px 14px;border:1px solid #e2e5ea;border-radius:8px"><div style="font-size:22px;font-weight:600;color:' + color + '">' + n + '</div><div style="font-size:12px;color:#5b6572">' + label + '</div></div>'; };
+    document.getElementById("qa-stats").innerHTML =
+      stat("Planned", QA_DATA.planned, "#1a2330") + stat("Executed", QA_DATA.executed, "#1a2330") +
+      stat("Passed", QA_DATA.passed, "#188544") + stat("Failed", QA_DATA.failed, "#c8322b") + stat("Blocked", QA_DATA.blocked, "#b7791f");
+    var total = QA_DATA.passed + QA_DATA.failed + QA_DATA.blocked;
+    var donut = document.getElementById("qa-donut"), C = 2 * Math.PI * 15.9, off = 0;
+    [["#188544", QA_DATA.passed], ["#c8322b", QA_DATA.failed], ["#b7791f", QA_DATA.blocked]].forEach(function (seg) {
+      if (!total || !seg[1]) return;
+      var len = C * seg[1] / total;
+      donut.innerHTML += '<circle r="15.9" cx="21" cy="21" fill="none" stroke="' + seg[0] + '" stroke-width="6" stroke-dasharray="' + len + " " + (C - len) + '" stroke-dashoffset="' + -off + '" transform="rotate(-90 21 21)"/>';
+      off += len;
+    });
+    donut.innerHTML += '<text x="21" y="23" text-anchor="middle" font-size="8" fill="#1a2330">' + (total ? Math.round(100 * QA_DATA.passed / total) + "%" : "n/a") + '</text>';
+    var bars = document.getElementById("qa-bars"), bw = 26, gap = 18, max = 1;
+    QA_DATA.suites.forEach(function (s) { max = Math.max(max, s.passed + s.failed); });
+    QA_DATA.suites.forEach(function (s, i) {
+      var x = 10 + i * (2 * bw + gap), hp = 110 * s.passed / max, hf = 110 * s.failed / max;
+      bars.innerHTML += '<rect x="' + x + '" y="' + (120 - hp) + '" width="' + bw + '" height="' + hp + '" fill="#188544"/>' +
+        '<rect x="' + (x + bw) + '" y="' + (120 - hf) + '" width="' + bw + '" height="' + hf + '" fill="#c8322b"/>' +
+        (s.passed ? '<text x="' + (x + bw / 2) + '" y="' + (116 - hp) + '" text-anchor="middle" font-size="10" font-weight="600" fill="#188544">' + s.passed + '</text>' : '') +
+        (s.failed ? '<text x="' + (x + bw * 1.5) + '" y="' + (116 - hf) + '" text-anchor="middle" font-size="10" font-weight="600" fill="#c8322b">' + s.failed + '</text>' : '') +
+        '<text x="' + (x + bw) + '" y="135" text-anchor="middle" font-size="10" fill="#5b6572">' + esc(s.name) + '</text>';
+    });
+    var table = function (headers, rows) { return '<table style="border-collapse:collapse;font-size:13px"><thead><tr>' + headers.map(function (h) { return '<th style="border:1px solid #e2e5ea;padding:5px 10px;text-align:left;background:#f5f6f8">' + h + '</th>'; }).join("") + '</tr></thead><tbody>' + rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td style="border:1px solid #e2e5ea;padding:5px 10px">' + c + '</td>'; }).join("") + '</tr>'; }).join("") + '</tbody></table>'; };
+    document.getElementById("qa-ac").innerHTML = QA_DATA.ac.length
+      ? table(["AC", "Criterion", "Scenario(s)", "Status"], QA_DATA.ac.map(function (a) { return [esc(a.id), esc(a.text), esc(a.scenarios.join(", ")), a.covered ? '<span style="color:#188544">covered</span>' : '<span style="color:#c8322b">NOT COVERED</span>']; }))
+      : '<p style="font-size:13px;color:#5b6572">n/a — bead has no acceptance criteria</p>';
+    document.getElementById("qa-manual").innerHTML = QA_DATA.manual.length ? QA_DATA.manual.map(function (m) { return "<li>" + esc(m) + "</li>"; }).join("") : "<li>none</li>";
+    document.getElementById("qa-defects").innerHTML = QA_DATA.defects.length
+      ? table(["Bead", "Severity", "Title", "Status"], QA_DATA.defects.map(function (d) { return [esc(d.id), esc(d.severity), esc(d.title), esc(d.status)]; }))
+      : '<p style="font-size:13px;color:#5b6572">none</p>';
+    document.getElementById("qa-healing").innerHTML = QA_DATA.healing.length ? QA_DATA.healing.map(function (h) { return "<li>" + esc(h) + "</li>"; }).join("") : "<li>healing not run</li>";
+  })();
+  </script>
+</section>
+<!-- qa-summary:end -->
+
     <div id='root'></div>
   </body>
 </html>
