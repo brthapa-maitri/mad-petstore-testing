@@ -1,0 +1,58 @@
+:root {
+  color-scheme: light dark;
+  --ink: #222;
+  --bg: #fafafa;
+  --rule: #ddd;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #eee;
+    --bg: #1d1f24;
+    --rule: #444;
+  }
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    16px/1.5 system-ui,
+    sans-serif;
+}
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+.bar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+form {
+  display: grid;
+  gap: 12px;
+  max-width: 360px;
+}
+label {
+  display: grid;
+  gap: 4px;
+}
+[role="alert"] {
+  color: #c0392b;
+}
+a {
+  color: inherit;
+}
